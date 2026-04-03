@@ -6,6 +6,12 @@
 <title>Reacción F1</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 <style>
+
+/* Tamaño del logo */
+:root {
+  --logo-size: 140px;
+}
+
 /* General y centrado */
 body {
   font-family: 'Orbitron', sans-serif;
@@ -53,10 +59,10 @@ body {
 
 /* Logo en esquina superior izquierda */
 #logo {
-  position: absolute;
+  position: fixed; /* antes era absolute */
   top: 10px;
   left: 10px;
-  width: 100px;
+  width: var(--logo-size);
   z-index: 10;
 }
 
@@ -166,7 +172,7 @@ button:hover {
 <div id="fondo"></div>
 
 <!-- Logo -->
-<img src="onix_logo2" alt="ONIX Logo" id="logo">
+<img src="onix_logo2.png" alt="ONIX Logo" id="logo">
 
 <h1>Prueba de Reacción F1</h1>
 
@@ -283,4 +289,5 @@ btnReintentar.addEventListener("click",()=>{
 </script>
 
 </body>
+</html>
 </html>
