@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reacción F1</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* General y centrado */
+body {
+  font-family: 'Orbitron', sans-serif;
+  background: #000; /* fondo negro */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  margin:0;
+  user-select: none;
+  position: relative;
+  overflow: auto; /* permite scroll */
+  min-height: 100vh;
+}
+
+/* Fondo hexágonos */
+#fondo {
+  position: absolute; 
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+}
+
+/* Hexágonos flotando */
+.hex {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #8a2be2, #ff69b4, #ffff00);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  opacity: 0.05;
+  animation: flotar linear infinite;
+  transform-origin: center;
+}
+
+@keyframes flotar {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(180deg); }
+  100% { transform: translateY(-60px) rotate(360deg); }
+}
+
+/* Logo en esquina superior izquierda */
+#logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 100px;
+  z-index: 10;
+}
+
+/* Título centrado */
+h1 {
+  font-size: 2rem;
+  background: linear-gradient(45deg, #8a2be2, #ff69b4, #ffff00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+  text-align: center;
+  z-index: 10;
+}
+
+/* Semáforo */
+.semaforo {
+  width: 120px;
+  background: #222;
+  border-radius: 25px;
+  padding: 25px;
+  margin-bottom: 30px;
+  border: 4px solid #8a2be2;
+  box-shadow: 0 0 30px rgba(0,0,0,0.7);
+  z-index: 10;
+}
+
+.luz {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: #111;
+  margin: 15px auto;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.luz.encendida {
+  box-shadow: 0 0 25px 8px currentColor;
+}
+
+/* Instrucciones centradas */
+.info {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #8a2be2, #ff69b4, #ffff00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  z-index: 10;
+}
+
+.invalido { color: #ff3333; font-weight: bold; }
+
+/* Botones centrados y con degradado */
+.botonera {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  z-index: 10;
+}
+
+button {
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 12px;
+  border: none;
+  color: #111;
+  background: linear-gradient(45deg, #8a2be2, #ff69b4, #ffff00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: scale(1.1);
+  text-shadow: 0 0 10px #fff;
+}
+
+/* Historial centrado */
+.historial {
+  width: 250px;
+  background: rgba(0,0,0,0.6);
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  margin-top: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+}
+
+.historial h3 {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<!-- Fondo hexágonos -->
+<div id="fondo"></div>
+
+<!-- Logo -->
+<img src="onix_logo2" alt="ONIX Logo" id="logo">
+
+<h1>Prueba de Reacción F1</h1>
+
+<div class="semaforo">
+  <div id="rojo" class="luz" style="color:red;"></div>
+  <div id="amarillo" class="luz" style="color:yellow;"></div>
+  <div id="verde" class="luz" style="color:green;"></div>
+</div>
+
+<div class="info">
+  <p id="instruccion">Presione "Iniciar" para comenzar.</p>
+</div>
+
+<div class="botonera">
+  <button id="btnIniciar">Iniciar</button>
+  <button id="btnFinalizar">Finalizar Tiempo</button>
+  <button id="btnReintentar" style="display:none;">Reintentar</button>
+</div>
+
+<div class="historial">
+  <h3>Último tiempo: <span id="ultimo">-</span> s</h3>
+  <h3>Mejor tiempo: <span id="mejor">-</span> s</h3>
+</div>
+
+<script>
+// --- Crear hexágonos flotantes ---
+const fondo = document.getElementById("fondo");
+const numHex = 20;
+for(let i=0;i<numHex;i++){
+  const hex = document.createElement("div");
+  hex.classList.add("hex");
+  const size = Math.random()*40+20;
+  hex.style.width = `${size}px`;
+  hex.style.height = `${size}px`;
+  hex.style.top = `${Math.random()*100}%`;
+  hex.style.left = `${Math.random()*100}%`;
+  hex.style.animationDuration = `${15+Math.random()*10}s`;
+  hex.style.opacity = 0.05 + Math.random()*0.05;
+  fondo.appendChild(hex);
+}
+
+// --- Código semáforo ---
+const luces = ["rojo","amarillo","verde"];
+const btnFinalizar = document.getElementById("btnFinalizar");
+const btnIniciar = document.getElementById("btnIniciar");
+const btnReintentar = document.getElementById("btnReintentar");
+const ultimo = document.getElementById("ultimo");
+const mejor = document.getElementById("mejor");
+const instruccion = document.getElementById("instruccion");
+let historial = [];
+let tiempoInicio = null;
+let pruebaActiva = false;
+
+function sleep(ms){ return new Promise(resolve=>setTimeout(resolve, ms)); }
+
+async function secuenciaLuces(){
+  pruebaActiva=false;
+  instruccion.textContent="Espere a que las luces se enciendan...";
+  for(let i=0;i<luces.length;i++){
+    prenderLuz(luces[i]);
+    if(i>0) apagarLuz(luces[i-1]);
+    await sleep(1000);
+  }
+  const duracion = Math.random()*2000+1000;
+  await sleep(duracion);
+  apagarTodasLuces();
+  tiempoInicio = new Date();
+  pruebaActiva = true;
+  instruccion.textContent="¡Presione 'Finalizar Tiempo' o barra de espacio!";
+}
+
+function prenderLuz(id){
+  const luz=document.getElementById(id);
+  luz.style.background=luz.style.color;
+  luz.classList.add("encendida");
+}
+function apagarLuz(id){
+  const luz=document.getElementById(id);
+  luz.style.background="#111";
+  luz.classList.remove("encendida");
+}
+function apagarTodasLuces(){ luces.forEach(apagarLuz); }
+
+function registrarTiempo(){
+  if(!pruebaActiva){
+    instruccion.innerHTML='<span class="invalido">¡Tiempo inválido!</span>';
+    return;
+  }
+  const tiempoFinal=new Date();
+  const t=((tiempoFinal-tiempoInicio)/1000).toFixed(3);
+  historial.push(parseFloat(t));
+
+  ultimo.textContent=t;
+  mejor.textContent=Math.min(...historial).toFixed(3);
+
+  pruebaActiva=false;
+  tiempoInicio=null;
+  instruccion.textContent="Presione 'Reintentar' para volver a intentar.";
+  btnReintentar.style.display="inline-block";
+}
+
+btnFinalizar.addEventListener("click",registrarTiempo);
+document.addEventListener("keydown",(e)=>{ if(e.code==="Space") registrarTiempo(); });
+
+btnIniciar.addEventListener("click",()=>{
+  btnIniciar.style.display="none";
+  btnReintentar.style.display="none";
+  secuenciaLuces();
+});
+btnReintentar.addEventListener("click",()=>{
+  btnReintentar.style.display="none";
+  secuenciaLuces();
+});
+</script>
+
+</body>
+</html>
