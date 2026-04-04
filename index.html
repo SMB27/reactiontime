@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reacción F1</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
 
 /* Tamaño del logo */
@@ -12,10 +13,10 @@
   --logo-size: 140px;
 }
 
-/* General y centrado */
+/* General */
 body {
   font-family: 'Orbitron', sans-serif;
-  background: #000; /* fondo negro */
+  background: #000;
   color: white;
   display: flex;
   flex-direction: column;
@@ -24,11 +25,11 @@ body {
   margin:0;
   user-select: none;
   position: relative;
-  overflow: auto; /* permite scroll */
+  overflow: auto;
   min-height: 100vh;
 }
 
-/* Fondo hexágonos */
+/* Fondo */
 #fondo {
   position: absolute; 
   top:0;
@@ -39,7 +40,7 @@ body {
   pointer-events:none;
 }
 
-/* Hexágonos flotando */
+/* Hexágonos */
 .hex {
   position: absolute;
   width: 40px;
@@ -48,33 +49,37 @@ body {
   clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   opacity: 0.05;
   animation: flotar linear infinite;
-  transform-origin: center;
 }
 
 @keyframes flotar {
-  0% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-30px) rotate(180deg); }
-  100% { transform: translateY(-60px) rotate(360deg); }
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-60px); }
 }
 
-/* Logo en esquina superior izquierda */
+/* Logo */
 #logo {
-  position: fixed; /* antes era absolute */
+  position: fixed;
   top: 10px;
   left: 10px;
   width: var(--logo-size);
   z-index: 10;
 }
 
-/* Título centrado */
+/* Título */
 h1 {
   font-size: 2rem;
   background: linear-gradient(45deg, #8a2be2, #ff69b4, #ffff00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 20px;
-  text-align: center;
-  z-index: 10;
+}
+
+/* INPUT NOMBRE */
+#nombreJugador{
+  margin-bottom:10px;
+  padding:8px;
+  border-radius:10px;
+  border:none;
+  text-align:center;
 }
 
 /* Semáforo */
@@ -83,10 +88,7 @@ h1 {
   background: #222;
   border-radius: 25px;
   padding: 25px;
-  margin-bottom: 30px;
   border: 4px solid #8a2be2;
-  box-shadow: 0 0 30px rgba(0,0,0,0.7);
-  z-index: 10;
 }
 
 .luz {
@@ -95,86 +97,71 @@ h1 {
   border-radius: 50%;
   background: #111;
   margin: 15px auto;
-  transition: background 0.2s, box-shadow 0.2s;
 }
 
 .luz.encendida {
   box-shadow: 0 0 25px 8px currentColor;
 }
 
-/* Instrucciones centradas */
+/* Info */
 .info {
-  text-align: center;
-  margin-bottom: 15px;
   font-size: 1.5rem;
   background: linear-gradient(45deg, #8a2be2, #ff69b4, #ffff00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  z-index: 10;
 }
 
-.invalido { color: #ff3333; font-weight: bold; }
+.invalido { color: red; }
 
-/* Botones centrados y con degradado */
+/* Botones */
 .botonera {
   display: flex;
-  justify-content: center;
   gap: 10px;
-  margin-bottom: 20px;
-  z-index: 10;
 }
 
 button {
   padding: 12px 25px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
   border-radius: 12px;
   border: none;
-  color: #111;
   background: linear-gradient(45deg, #8a2be2, #ff69b4, #ffff00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-button:hover {
-  transform: scale(1.1);
-  text-shadow: 0 0 10px #fff;
-}
-
-/* Historial centrado */
+/* Historial */
 .historial {
-  width: 250px;
-  background: rgba(0,0,0,0.6);
-  padding: 15px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
   margin-top: 20px;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
-  z-index: 10;
 }
 
-.historial h3 {
-  margin: 5px 0;
-  font-size: 0.9rem;
-  color: white;
+/* TABLA */
+#tablaRanking {
+  width: 250px;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
+
+#tablaRanking th {
+  font-size: 0.9rem;
+}
+
+#tablaRanking td {
+  font-size: 0.85rem;
+  padding: 5px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
 </style>
 </head>
 <body>
 
-<!-- Fondo hexágonos -->
 <div id="fondo"></div>
 
-<!-- Logo -->
-<img src="onix_logo2.png" alt="ONIX Logo" id="logo">
+<img src="onix_logo2.png" id="logo">
 
 <h1>Prueba de Reacción F1</h1>
+
+<input id="nombreJugador" placeholder="Tu nombre">
 
 <div class="semaforo">
   <div id="rojo" class="luz" style="color:red;"></div>
@@ -193,28 +180,51 @@ button:hover {
 </div>
 
 <div class="historial">
-  <h3>Último tiempo: <span id="ultimo">-</span> s</h3>
-  <h3>Mejor tiempo: <span id="mejor">-</span> s</h3>
+  <h3>Último tiempo: <span id="ultimo">-</span></h3>
+  <h3>Mejor tiempo: <span id="mejor">-</span></h3>
+
+  <h3>🏁 Ranking Global</h3>
+  <table id="tablaRanking">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Tiempo</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
-<script>
-// --- Crear hexágonos flotantes ---
+<script type="module">
+
+// FIREBASE
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHSNdY_R6cvdzL9rMnfBDdbgyoW3F4NZE",
+  authDomain: "onix-reaction-87740.firebaseapp.com",
+  projectId: "onix-reaction-87740",
+  storageBucket: "onix-reaction-87740.firebasestorage.app",
+  messagingSenderId: "23997394829",
+  appId: "1:23997394829:web:a05ecad9aa646f58f257c4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// HEXÁGONOS
 const fondo = document.getElementById("fondo");
-const numHex = 20;
-for(let i=0;i<numHex;i++){
+for(let i=0;i<20;i++){
   const hex = document.createElement("div");
   hex.classList.add("hex");
-  const size = Math.random()*40+20;
-  hex.style.width = `${size}px`;
-  hex.style.height = `${size}px`;
-  hex.style.top = `${Math.random()*100}%`;
-  hex.style.left = `${Math.random()*100}%`;
-  hex.style.animationDuration = `${15+Math.random()*10}s`;
-  hex.style.opacity = 0.05 + Math.random()*0.05;
+  hex.style.top = Math.random()*100+"%";
+  hex.style.left = Math.random()*100+"%";
   fondo.appendChild(hex);
 }
 
-// --- Código semáforo ---
+// SEMÁFORO
 const luces = ["rojo","amarillo","verde"];
 const btnFinalizar = document.getElementById("btnFinalizar");
 const btnIniciar = document.getElementById("btnIniciar");
@@ -222,26 +232,24 @@ const btnReintentar = document.getElementById("btnReintentar");
 const ultimo = document.getElementById("ultimo");
 const mejor = document.getElementById("mejor");
 const instruccion = document.getElementById("instruccion");
+
 let historial = [];
 let tiempoInicio = null;
 let pruebaActiva = false;
 
-function sleep(ms){ return new Promise(resolve=>setTimeout(resolve, ms)); }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
 async function secuenciaLuces(){
   pruebaActiva=false;
-  instruccion.textContent="Espere a que las luces se enciendan...";
   for(let i=0;i<luces.length;i++){
     prenderLuz(luces[i]);
     if(i>0) apagarLuz(luces[i-1]);
     await sleep(1000);
   }
-  const duracion = Math.random()*2000+1000;
-  await sleep(duracion);
+  await sleep(Math.random()*2000+1000);
   apagarTodasLuces();
   tiempoInicio = new Date();
   pruebaActiva = true;
-  instruccion.textContent="¡Presione 'Finalizar Tiempo' o barra de espacio!";
 }
 
 function prenderLuz(id){
@@ -256,38 +264,98 @@ function apagarLuz(id){
 }
 function apagarTodasLuces(){ luces.forEach(apagarLuz); }
 
-function registrarTiempo(){
+async function registrarTiempo(){
   if(!pruebaActiva){
     instruccion.innerHTML='<span class="invalido">¡Tiempo inválido!</span>';
     return;
   }
-  const tiempoFinal=new Date();
-  const t=((tiempoFinal-tiempoInicio)/1000).toFixed(3);
-  historial.push(parseFloat(t));
 
-  ultimo.textContent=t;
-  mejor.textContent=Math.min(...historial).toFixed(3);
+  const t=((new Date()-tiempoInicio)/1000).toFixed(3);
+  const nombre = document.getElementById("nombreJugador").value || "Anónimo";
+
+  if(parseFloat(t) > 0){
+    historial.push(parseFloat(t));
+    ultimo.textContent=t;
+    mejor.textContent=Math.min(...historial).toFixed(3);
+
+    // 🔥 SOLO MEJOR TIEMPO
+    const jugadoresRef = collection(db, "leaderboard");
+    const snapshot = await getDocs(jugadoresRef);
+
+    let existe = false;
+
+    for (const documento of snapshot.docs) {
+      const data = documento.data();
+
+      if (data.nombre === nombre) {
+        existe = true;
+
+        if (parseFloat(t) < data.tiempo) {
+          await setDoc(doc(db, "leaderboard", documento.id), {
+            nombre: nombre,
+            tiempo: parseFloat(t)
+          });
+        }
+
+        break;
+      }
+    }
+
+    if (!existe) {
+      await addDoc(collection(db,"leaderboard"),{
+        nombre: nombre,
+        tiempo: parseFloat(t)
+      });
+    }
+  }
 
   pruebaActiva=false;
-  tiempoInicio=null;
-  instruccion.textContent="Presione 'Reintentar' para volver a intentar.";
   btnReintentar.style.display="inline-block";
 }
 
-btnFinalizar.addEventListener("click",registrarTiempo);
-document.addEventListener("keydown",(e)=>{ if(e.code==="Space") registrarTiempo(); });
+btnFinalizar.onclick=registrarTiempo;
+document.addEventListener("keydown",e=>{ if(e.code==="Space") registrarTiempo(); });
 
-btnIniciar.addEventListener("click",()=>{
+btnIniciar.onclick=()=>{
   btnIniciar.style.display="none";
   btnReintentar.style.display="none";
   secuenciaLuces();
-});
-btnReintentar.addEventListener("click",()=>{
+};
+
+btnReintentar.onclick=()=>{
   btnReintentar.style.display="none";
   secuenciaLuces();
+};
+
+// RANKING EN VIVO
+const tablaBody = document.querySelector("#tablaRanking tbody");
+
+const q = query(
+  collection(db,"leaderboard"),
+  orderBy("tiempo"),
+  limit(11)
+);
+
+onSnapshot(q,(snapshot)=>{
+  tablaBody.innerHTML="";
+  let pos=1;
+
+  snapshot.forEach(doc=>{
+    const data=doc.data();
+    if(data.tiempo <= 0) return;
+
+    tablaBody.innerHTML += `
+      <tr>
+        <td>${pos}</td>
+        <td>${data.nombre || "Anon"}</td>
+        <td>${data.tiempo.toFixed(3)}</td>
+      </tr>
+    `;
+    pos++;
+  });
 });
+
 </script>
 
 </body>
-</html>
 </html>
